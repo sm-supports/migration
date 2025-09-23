@@ -113,26 +113,13 @@ export default function ContactPage() {
     const start = Date.now()
     setLoading(true)
     try {
-      // Use Formspree for static form handling
-      const res = await fetch('https://formspree.io/f/xvgzabjn', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 
-          'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          company: formData.company,
-          phone: formData.phone,
-          projectType: formData.projectType,
-          budget: formData.budget,
-          timeline: formData.timeline,
-          technologies: formData.technologies.join(', '),
-          message: formData.message,
-          _subject: `New Portfolio Contact: ${formData.name}`,
-        }),
-      })
+        body: JSON.stringify(formData),
+      });
       
       if (res.ok) {
         setSuccessMsg('Message sent! I\'ll get back to you shortly.')

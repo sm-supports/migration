@@ -3,6 +3,8 @@
   "/page": "app/page.js",
   "/contact/page": "app/contact/page.js",
   "/schedule/page": "app/schedule/page.js",
-  "/projects/page": "app/projects/page.js",
-  "/services/page": "app/services/page.js"
+  "/api/schedule/route": "app/api/schedule/route.js",
+  "/api/ip/route": "app/api/ip/route.js",
+  "/api/contact/route": "app/api/contact/route.js",
+  "/projects/page": "app/projects/page.js"
 }

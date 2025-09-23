@@ -58,21 +58,14 @@ export function ProjectCard({ project, idx }: ProjectCardProps) {
               className="rounded-t-lg object-cover w-full h-full"
               onMouseEnter={(e) => {
                 const video = e.target as HTMLVideoElement;
-                console.log('Attempting to play video:', project.video);
-                video.play().catch((error) => {
-                  console.error('Video play failed:', error);
-                });
+                video.play().catch(() => {});
               }}
               onMouseLeave={(e) => {
                 const video = e.target as HTMLVideoElement;
                 video.pause();
                 video.currentTime = 0;
               }}
-              onCanPlay={() => {
-                console.log('Video can play:', project.video);
-              }}
               onError={(e) => {
-                console.error('Video error for:', project.video);
                 const target = e.target as HTMLVideoElement;
                 target.style.display = 'none';
               }}

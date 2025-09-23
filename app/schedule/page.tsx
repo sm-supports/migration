@@ -95,7 +95,7 @@ export default function ScheduleMeeting() {
         try {
           const c2 = new AbortController()
           const t2 = setTimeout(() => c2.abort(), 2000)
-          const r2 = await fetch('https://ipapi.co/json', { signal: c2.signal })
+          const r2 = await fetch('/api/ip', { signal: c2.signal });
           clearTimeout(t2)
           if (r2.ok) {
             let j2: any = null
