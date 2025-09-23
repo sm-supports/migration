@@ -1,10 +1,4 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
   "/page": "app/page.js",
-  "/contact/page": "app/contact/page.js",
-  "/schedule/page": "app/schedule/page.js",
-  "/api/schedule/route": "app/api/schedule/route.js",
-  "/api/ip/route": "app/api/ip/route.js",
-  "/api/contact/route": "app/api/contact/route.js",
-  "/projects/page": "app/projects/page.js"
+  "/projects/burnt-blue-holdings/page": "app/projects/burnt-blue-holdings/page.js"
 }
