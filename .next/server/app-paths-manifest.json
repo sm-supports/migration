@@ -1,0 +1,13 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/about/page": "app/about/page.js",
+  "/page": "app/page.js",
+  "/contact/page": "app/contact/page.js",
+  "/projects/isplit-expense-tracker/page": "app/projects/isplit-expense-tracker/page.js",
+  "/projects/api-integration-service/page": "app/projects/api-integration-service/page.js",
+  "/projects/burnt-blue-holdings/page": "app/projects/burnt-blue-holdings/page.js",
+  "/projects/page": "app/projects/page.js",
+  "/projects/license-plate-designer/page": "app/projects/license-plate-designer/page.js",
+  "/schedule/page": "app/schedule/page.js",
+  "/services/page": "app/services/page.js"
+}
