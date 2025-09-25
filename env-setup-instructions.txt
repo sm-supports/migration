@@ -1,0 +1,6 @@
+# Create .env.local for local development (don't commit this file)
+NEXT_PUBLIC_SUPABASE_URL=your_actual_supabase_url_here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_actual_supabase_anon_key_here
+EMAIL_AUTH_USER=your_actual_email_here
+EMAIL_AUTH_PASS=your_actual_email_password_here
+ADMIN_EMAIL=your_actual_admin_email_here
