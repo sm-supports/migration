@@ -1,6 +1,8 @@
 # SM Supports Portfolio
 
-A modern, responsive portfolio website built with Next.js 14, TypeScript, and TailwindCSS. This project replicates the look and feel of huly.io while showcasing SM Supports' services and projects.
+A modern, responsive portfolio website built with Next.js 14, TypeScript, and TailwindCSS. This project showcases SM Supports' services and projects with Supabase integration and email functionality.
+
+🌟 **Now deployed on Cloudflare Pages with full environment variable support!**
 
 ## 🚀 Features
 
