@@ -8,7 +8,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "deploy": "wrangler pages deploy out",
+    "deploy:preview": "wrangler pages deploy out --project-name=sm-supports-portfolio-preview",
+    "build:deploy": "npm run build && npm run deploy"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.0",

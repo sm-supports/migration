@@ -1,0 +1,6 @@
+name = "sm-supports-portfolio"
+compatibility_date = "2025-09-23"
+pages_build_output_dir = "out"
+
+[env.production]
+compatibility_date = "2025-09-23"
