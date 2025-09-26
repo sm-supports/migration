@@ -6,7 +6,7 @@ pages_build_output_dir = "out"
 [[d1_databases]]
 binding = "DB"
 database_name = "sm-supports-meetings"
-database_id = "YOUR_DATABASE_ID" # Will be generated when you create the database
+database_id = "a7d2593d-b698-4424-b814-9370b82f68e5" # Will be generated when you create the database
 
 [env.production]
 compatibility_date = "2025-09-23"
