@@ -7,6 +7,7 @@ import type { MeetingData } from '@/types';
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
+import { TimezoneSelect } from '@/components/ui/TimezoneSelect'
 import { getTimezone } from 'countries-and-timezones'
 
 const TIME_SLOTS = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00'] as const
@@ -199,8 +200,26 @@ export default function ScheduleMeeting() {
   const flagEmoji = codeToFlagEmoji(countryCode)
 
   const setField = (key: keyof BookingFormData, value: any) => {
-    setFormData(prev => ({ ...prev, [key]: value }))
-    setErrors(prev => ({ ...prev, [key]: undefined }))
+    setFormData(prev => {
+      const updated = { ...prev, [key]: value }
+      
+      // Clear time selection when date changes to ensure valid combinations
+      if (key === 'date' && prev.time) {
+        updated.time = ''
+      }
+      
+      return updated
+    })
+    setErrors(prev => {
+      const updated = { ...prev, [key]: undefined }
+      
+      // Clear time error when date changes
+      if (key === 'date') {
+        updated.time = undefined
+      }
+      
+      return updated
+    })
   }
   // When timezone changes (incl. user manual change), map timezone -> primary country code
   useEffect(() => {
@@ -273,6 +292,37 @@ export default function ScheduleMeeting() {
     if (!formData.time) e.time = 'Please select a time'
     setErrors(e)
     return Object.keys(e).length === 0
+  }
+
+  // Validation for step 1 (date and time selection)
+  const validateStep1 = () => {
+    const e: FormErrors = {}
+    
+    if (!formData.date) {
+      e.date = 'Please select a date first'
+      setToast({ type: 'error', message: 'Please select a date before choosing a time slot' })
+    }
+    
+    if (!formData.time) {
+      e.time = 'Please select a time slot'
+      if (formData.date) {
+        setToast({ type: 'error', message: 'Please select an available time slot' })
+      }
+    }
+    
+    setErrors(prev => ({ ...prev, ...e }))
+    return Object.keys(e).length === 0
+  }
+
+  // Handle step navigation with validation
+  const handleNextStep = () => {
+    if (validateStep1()) {
+      setStep(2)
+      // Clear any previous validation toasts
+      if (toast?.type === 'error') {
+        setToast(null)
+      }
+    }
   }
   const handleSubmit = async (ev?: React.FormEvent) => {
     ev?.preventDefault()
@@ -450,10 +500,17 @@ END:VCALENDAR
               {/* Step 1: Time Slot */}
               <div className={`transition-all duration-300 ${stepTransition === 1 ? "block" : "hidden"}`}>
                 <h2 className="text-lg md:text-xl font-bold text-blue-700 mb-2">Choose a Time</h2>
+                {!formData.date && (
+                  <div className="mb-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                    <p className="text-sm text-amber-700 font-medium">
+                      ⚠️ Please select a date first to view available time slots
+                    </p>
+                  </div>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 mb-4">
                 {(rpcSlots ?? TIME_SLOTS.map(t => ({ time_slot: t, is_booked: isSlotBooked(t as TimeSlot) }))).map(s => {
                   const past = isSlotInPast(s.time_slot)
-                  const disabled = s.is_booked || past
+                  const disabled = !formData.date || s.is_booked || past
                   return (
                   <button
                     key={s.time_slot}
@@ -467,8 +524,18 @@ END:VCALENDAR
                           ? 'bg-blue-600 text-white shadow-lg'
                           : 'bg-white border-gray-200 hover:bg-blue-50 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white'}
                     `}
-                    onClick={() => !disabled && setField('time', formData.time === s.time_slot ? '' : s.time_slot)}
+                    onClick={() => {
+                      if (!formData.date) {
+                        setToast({ type: 'error', message: 'Please select a date first before choosing a time slot' })
+                        setErrors(prev => ({ ...prev, date: 'Please select a date first' }))
+                        return
+                      }
+                      if (!disabled) {
+                        setField('time', formData.time === s.time_slot ? '' : s.time_slot)
+                      }
+                    }}
                     type="button"
+                    title={!formData.date ? 'Please select a date first' : disabled ? 'This time slot is not available' : 'Select this time slot'}
                   >
                     {s.time_slot}
                   </button>
@@ -476,11 +543,12 @@ END:VCALENDAR
               </div>
               {errors.time && <p className="text-xs text-red-500 mb-2">{errors.time}</p>}
               <Button
-                className="w-full py-2 md:py-3 rounded-lg bg-blue-600 text-white text-base md:text-lg font-bold shadow-sm hover:bg-blue-700 disabled:opacity-70"
-                onClick={() => setStep(2)}
-                disabled={!formData.time}
+                className="w-full py-2 md:py-3 rounded-lg bg-blue-600 text-white text-base md:text-lg font-bold shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handleNextStep}
+                disabled={!formData.date || !formData.time}
+                title={!formData.date ? 'Please select a date first' : !formData.time ? 'Please select a time slot' : 'Continue to details'}
               >
-                Next
+                {!formData.date ? 'Select Date First' : !formData.time ? 'Select Time Slot' : 'Next'}
               </Button>
             </div>
             {/* Step 2: Details */}
@@ -529,16 +597,14 @@ END:VCALENDAR
                     className="mb-1"
                   />
                 ) : timezoneList ? (
-                  <select
+                  <TimezoneSelect
                     value={formData.timezone || ''}
-                    onChange={e => setField('timezone', e.target.value)}
-                    className="p-2 rounded-md border border-input bg-input text-sm"
-                  >
-                    <option value="">(Select timezone)</option>
-                    {timezoneList.map(tz => (
-                      <option key={tz} value={tz}>{tz}</option>
-                    ))}
-                  </select>
+                    onChange={(tz) => setField('timezone', tz)}
+                    timezones={timezoneList}
+                    placeholder="Search and select timezone..."
+                    disabled={isSubmitting}
+                    className="mb-1"
+                  />
                 ) : (
                   <Input
                     name="timezone"
