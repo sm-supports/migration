@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { DayPicker } from 'react-day-picker'
 import { addDays, format } from 'date-fns'
-import { scheduleMeeting, getBookedTimeSlots, getTimeSlots } from '@/lib/meetingService';
+import { scheduleMeeting, getBookedTimeSlots, getTimeSlots } from '@/lib/meetingServiceCloudflare';
 import type { MeetingData } from '@/types';
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'

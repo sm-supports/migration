@@ -2,5 +2,11 @@ name = "sm-supports-portfolio"
 compatibility_date = "2025-09-23"
 pages_build_output_dir = "out"
 
+# Cloudflare D1 Database Configuration
+[[d1_databases]]
+binding = "DB"
+database_name = "sm-supports-meetings"
+database_id = "YOUR_DATABASE_ID" # Will be generated when you create the database
+
 [env.production]
 compatibility_date = "2025-09-23"
