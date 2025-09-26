@@ -5,6 +5,11 @@ import type { MeetingData } from '@/types';
 
 async function checkAvailability(date: Date, timeSlot: string) {
   try {
+    if (!supabase) {
+      console.warn('Supabase not available; proceeding optimistically');
+      return;
+    }
+    
     const { data, error } = await supabase
       .from('meetings')
       .select('id')
@@ -46,6 +51,10 @@ function createMeetingPayload(data: MeetingData) {
 }
 
 async function insertMeeting(payload: any) {
+  if (!supabase) {
+    throw new Error('Database not available. Please check your configuration.');
+  }
+  
   const { data, error } = await supabase.from('meetings').insert([payload]).select().single();
 
   if (error) {
@@ -134,6 +143,11 @@ export async function scheduleMeeting(data: MeetingData) {
 export async function getBookedTimeSlots(date: Date) {
   const ymd = format(date, 'yyyy-MM-dd')
   try {
+    if (!supabase) {
+      console.warn('Database not available; returning empty slots');
+      return []
+    }
+    
     // First, try with a status filter (preferred schema)
     const withStatus = await supabase
       .from('meetings')
@@ -173,6 +187,11 @@ export type TimeSlotStatus = { time_slot: string; is_booked: boolean }
  */
 export async function getTimeSlots(date: Date) {
   try {
+    if (!supabase) {
+      console.warn('Database not available; returning empty time slots');
+      return []
+    }
+    
     const ymd = format(date, 'yyyy-MM-dd')
     const { data, error } = await supabase.rpc('get_time_slots', { p_date: ymd })
     if (error) {
