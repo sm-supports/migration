@@ -298,16 +298,16 @@ export default function ScheduleMeeting() {
   const validateStep1 = () => {
     const e: FormErrors = {}
     
-    if (!formData.date) {
+    if (!formData.date && !formData.time) {
+      e.date = 'Please select a date first'
+      e.time = 'Please select a time slot'
+      setToast({ type: 'error', message: 'Please select both a date and time slot to continue' })
+    } else if (!formData.date) {
       e.date = 'Please select a date first'
       setToast({ type: 'error', message: 'Please select a date before choosing a time slot' })
-    }
-    
-    if (!formData.time) {
+    } else if (!formData.time) {
       e.time = 'Please select a time slot'
-      if (formData.date) {
-        setToast({ type: 'error', message: 'Please select an available time slot' })
-      }
+      setToast({ type: 'error', message: 'Please select an available time slot to continue' })
     }
     
     setErrors(prev => ({ ...prev, ...e }))
@@ -543,10 +543,16 @@ END:VCALENDAR
               </div>
               {errors.time && <p className="text-xs text-red-500 mb-2">{errors.time}</p>}
               <Button
-                className="w-full py-2 md:py-3 rounded-lg bg-blue-600 text-white text-base md:text-lg font-bold shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`
+                  w-full py-2 md:py-3 rounded-lg text-base md:text-lg font-bold shadow-sm transition-all
+                  ${(!formData.date || !formData.time) 
+                    ? 'bg-gray-400 text-gray-100 cursor-pointer hover:bg-gray-500' 
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                  }
+                `}
                 onClick={handleNextStep}
-                disabled={!formData.date || !formData.time}
-                title={!formData.date ? 'Please select a date first' : !formData.time ? 'Please select a time slot' : 'Continue to details'}
+                aria-disabled={!formData.date || !formData.time}
+                title={!formData.date ? 'Click to see what\'s required' : !formData.time ? 'Click to see what\'s required' : 'Continue to details'}
               >
                 {!formData.date ? 'Select Date First' : !formData.time ? 'Select Time Slot' : 'Next'}
               </Button>
